@@ -140,7 +140,7 @@ public class SegmentedLeastSquares {
 	//  Note that this method just computes the opt values.  It doesn't do the segmentation.
 
 	public double computeOptRecursive(int j){
-		double verySmallError = costSegment / Math.pow(10,9);
+		double verySmallError = costSegment / Math.pow(10,15);
 		if(Math.abs(opt[j]) >= verySmallError)
 			return opt[j]; //has already been computed, just return that.
 		else {
