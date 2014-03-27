@@ -111,17 +111,15 @@ public class SegmentedLeastSquares {
 	public void computeOptIterative( ){
 		//   ADD YOUR CODE HERE
 		
-		// Following are base cases known from the start. 
+		// Following are base cases known from the start. Might not be needed!
 		opt[0] = 0;
-		opt[1] = costSegment;
-		opt[2] = costSegment;
 		
 		for(int j = 1; j < opt.length; j++) {
 			opt[j] = findBestSolution(j);
 		}
 	}
 	
-	public double findBestSolution(int j) {
+	private double findBestSolution(int j) {
 		//worst solution
 		double bestSolution = Double.POSITIVE_INFINITY;
 		double currentSolution = Double.POSITIVE_INFINITY;
@@ -142,12 +140,36 @@ public class SegmentedLeastSquares {
 	//  Note that this method just computes the opt values.  It doesn't do the segmentation.
 
 	public double computeOptRecursive(int j){
-
-		//   ADD YOUR CODE HERE
-
-		return 0.0;  //  replace this line
-
+		double verySmallError = costSegment / Math.pow(10,9);
+		if(Math.abs(opt[j]) >= verySmallError)
+			return opt[j]; //has already been computed, just return that.
+		else {
+			switch(j) {
+			case 0: 
+				return 0.0;
+			default:
+				return recursivelyFindBestSolution(j);
+			}
+		}
 	}
+	
+	private double recursivelyFindBestSolution(int j) {
+		//worst solution
+		double bestSolution = Double.POSITIVE_INFINITY;
+		double currentSolution = Double.POSITIVE_INFINITY;
+		
+		//go upto j, checking ever intermediate solution. 
+		for(int i = 1; i <= j; ++i) {
+			currentSolution = computeOptRecursive(i-1) + e_ij[i][j] + costSegment;
+			if(currentSolution < bestSolution) {
+				bestSolution = currentSolution;
+			}
+		}
+		//memoize.
+		opt[j] = bestSolution;
+		return bestSolution;
+	}
+	
 
 	//  This will compute lineSegments, which is an ArrayList<LineSegment>. 
 	
