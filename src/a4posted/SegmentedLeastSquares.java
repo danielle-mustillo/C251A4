@@ -109,9 +109,31 @@ public class SegmentedLeastSquares {
 	//  for j in 0 to N-1.  It uses iteration with memoization,   
 
 	public void computeOptIterative( ){
-								  
 		//   ADD YOUR CODE HERE
-
+		
+		// Following are base cases known from the start. 
+		opt[0] = 0;
+		opt[1] = costSegment;
+		opt[2] = costSegment;
+		
+		for(int j = 1; j < opt.length; j++) {
+			opt[j] = findBestSolution(j);
+		}
+	}
+	
+	public double findBestSolution(int j) {
+		//worst solution
+		double bestSolution = Double.POSITIVE_INFINITY;
+		double currentSolution = Double.POSITIVE_INFINITY;
+		
+		//go upto j, checking ever intermediate solution. 
+		for(int i = 1; i <= j; ++i) {
+			currentSolution = opt[i-1] + e_ij[i][j] + costSegment;
+			if(currentSolution < bestSolution) {
+				bestSolution = currentSolution;
+			}
+		}
+		return bestSolution;
 	}
 
 	//  This method computes the minimal cost of a least squares fit for the first j samples, 
@@ -132,7 +154,33 @@ public class SegmentedLeastSquares {
 	public void computeSegmentation(int j){
 
 	//   ADD YOUR CODE HERE
+		if( j > 0) {
+			int i = findIndexBestSolution(j);
+			LineSegment ls = new LineSegment();
+			ls.i = i;
+			ls.j = j;
+			ls.a = a[i][j];
+			ls.b = b[i][j];
+			ls.error = e_ij[i][j];
+			lineSegments.add(ls);
+			computeSegmentation(i - 1);
+		}
 
+	}
+	
+	private int findIndexBestSolution(int j) {
+		double bestSolution = Double.POSITIVE_INFINITY;
+		double currentSolution = Double.POSITIVE_INFINITY;
+		int bestIdx = -1;
+		
+		for(int i = 1; i <= j; ++i) {
+			currentSolution = opt[i-1] + e_ij[i][j] + costSegment;
+			if(currentSolution < bestSolution) {
+				bestSolution = currentSolution;
+				bestIdx = i;
+			}
+		}
+		return bestIdx;
 	}
 
 	public ArrayList<LineSegment> solveIterative(){
