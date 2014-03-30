@@ -2,6 +2,7 @@ package a4posted;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class SegmentedLeastSquares {
@@ -112,11 +113,14 @@ public class SegmentedLeastSquares {
 		//   ADD YOUR CODE HERE
 		
 		// Following are base cases known from the start. Might not be needed!
-		opt[0] = 0;
+		opt[0] = 0.0;
 		
 		for(int j = 1; j < opt.length; j++) {
 			opt[j] = findBestSolution(j);
 		}
+		//for (int k = 0; k < opt.length; k++)
+		//	System.out.print(k + "-->" + opt[k]);
+		//System.out.println(Arrays.toString(opt));
 	}
 	
 	private double findBestSolution(int j) {
@@ -125,8 +129,11 @@ public class SegmentedLeastSquares {
 		double currentSolution = Double.POSITIVE_INFINITY;
 		
 		//go upto j, checking ever intermediate solution. 
-		for(int i = 1; i <= j; ++i) {
-			currentSolution = opt[i-1] + e_ij[i][j] + costSegment;
+		for(int i = 0; i <= j; ++i) {
+			if(i == 0) 
+				currentSolution = opt[i] + e_ij[i][j] + costSegment;
+			else
+				currentSolution = opt[i-1] + e_ij[i][j] + costSegment;
 			if(currentSolution < bestSolution) {
 				bestSolution = currentSolution;
 			}
@@ -197,7 +204,7 @@ public class SegmentedLeastSquares {
 		
 		for(int i = 1; i <= j; ++i) {
 			currentSolution = opt[i-1] + e_ij[i][j] + costSegment;
-			if(currentSolution < bestSolution) {
+			if(currentSolution <= bestSolution) {
 				bestSolution = currentSolution;
 				bestIdx = i;
 			}
