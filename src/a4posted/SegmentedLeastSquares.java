@@ -113,7 +113,6 @@ public class SegmentedLeastSquares {
 		//   ADD YOUR CODE HERE
 		
 		// Following are base cases known from the start. Might not be needed!
-		opt[0] = 0.0;
 		
 		for(int j = 1; j < opt.length; j++) {
 			opt[j] = findBestSolution(j);
@@ -131,7 +130,7 @@ public class SegmentedLeastSquares {
 		//go upto j, checking ever intermediate solution. 
 		for(int i = 0; i <= j; ++i) {
 			if(i == 0) 
-				currentSolution = opt[i] + e_ij[i][j] + costSegment;
+				currentSolution = e_ij[0][j]; //no error for opt[0] and no costSegment at base case. 
 			else
 				currentSolution = opt[i-1] + e_ij[i][j] + costSegment;
 			if(currentSolution < bestSolution) {
@@ -166,8 +165,11 @@ public class SegmentedLeastSquares {
 		double currentSolution = Double.POSITIVE_INFINITY;
 		
 		//go upto j, checking ever intermediate solution. 
-		for(int i = 1; i <= j; ++i) {
-			currentSolution = computeOptRecursive(i-1) + e_ij[i][j] + costSegment;
+		for(int i = 0; i <= j; ++i) {
+			if (i == 0)
+				currentSolution = e_ij[0][j];
+			else
+				currentSolution = computeOptRecursive(i-1) + e_ij[i][j] + costSegment;
 			if(currentSolution < bestSolution) {
 				bestSolution = currentSolution;
 			}
@@ -183,7 +185,7 @@ public class SegmentedLeastSquares {
 	public void computeSegmentation(int j){
 
 	//   ADD YOUR CODE HERE
-		if( j > 0) {
+		if( j >= 0) {
 			int i = findIndexBestSolution(j);
 			LineSegment ls = new LineSegment();
 			ls.i = i;
@@ -202,8 +204,11 @@ public class SegmentedLeastSquares {
 		double currentSolution = Double.POSITIVE_INFINITY;
 		int bestIdx = -1;
 		
-		for(int i = 1; i <= j; ++i) {
-			currentSolution = opt[i-1] + e_ij[i][j] + costSegment;
+		for(int i = 0; i <= j; ++i) {
+			if(i == 0) 
+				currentSolution = opt[0] + e_ij[0][j] /*+ costSegment*/;
+			else
+				currentSolution = opt[i-1] + e_ij[i][j] + costSegment;
 			if(currentSolution <= bestSolution) {
 				bestSolution = currentSolution;
 				bestIdx = i;
